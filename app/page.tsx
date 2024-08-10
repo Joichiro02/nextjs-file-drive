@@ -1,9 +1,10 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import { api } from '@/convex/_generated/api';
 import { useOrganization, useUser } from '@clerk/nextjs';
 import { useMutation, useQuery } from 'convex/react';
+
+import { UploadButton } from './dashboard/_components/upload-button';
 
 export default function Home() {
 	const organization = useOrganization();
@@ -15,21 +16,13 @@ export default function Home() {
 	}
 
 	const files = useQuery(api.files.getFiles, orgId ? { orgId } : 'skip');
-	const createFile = useMutation(api.files.createFile);
 
 	return (
-		<main className="flex min-h-screen flex-col items-center justify-between p-24">
-			<Button
-				onClick={() => {
-					if (!orgId) return;
-					createFile({
-						name: 'Hello World People',
-						orgId,
-					});
-				}}
-			>
-				Click me
-			</Button>
+		<main className="container mx-auto pt-12">
+			<div className="flex items-center justify-between">
+				<h1 className="text-4xl font-bold">Your Files</h1>
+				<UploadButton />
+			</div>
 
 			{files?.map((item, index) => <p key={index}>{item.name}</p>)}
 		</main>
