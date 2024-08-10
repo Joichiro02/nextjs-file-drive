@@ -3,9 +3,10 @@
 import { Button } from "@/components/ui/button";
 import { api } from "@/convex/_generated/api";
 import { SignedIn, SignedOut, SignInButton, SignOutButton } from "@clerk/nextjs";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 
 export default function Home() {
+  const files = useQuery(api.files.getFiles);
   const createFile = useMutation(api.files.createFile);
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
@@ -21,8 +22,14 @@ export default function Home() {
       </SignedOut>
 
       <Button onClick={() => createFile({
-        name: 'Hello World'
+        name: 'Hello World People'
       })}>Click me</Button>
+
+      {
+        files?.map((item, index) => (
+          <p key={index}>{item.name}</p>
+        ))
+      }
     </main>
   );
 }
