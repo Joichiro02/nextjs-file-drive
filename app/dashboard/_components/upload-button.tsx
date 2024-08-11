@@ -54,6 +54,15 @@ export function UploadButton() {
 
 	const fileRef = form.register('file');
 
+	let orgId: string | undefined = undefined;
+	if (organization.isLoaded && user.isLoaded) {
+		orgId = organization.organization?.id ?? user.user?.id;
+	}
+
+	const [isFileDialogOpen, setIsFileDialogOpen] = useState(false);
+
+	const createFile = useMutation(api.files.createFile);
+
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		if (!orgId) return;
 
@@ -70,6 +79,8 @@ export function UploadButton() {
 
 		const types = {
 			'image/png': 'image',
+			'image/jpg': 'image',
+			'image/jpeg': 'image',
 			'application/pdf': 'pdf',
 			'text/csv': 'csv',
 		} as Record<string, Doc<'files'>['type']>;
@@ -99,15 +110,6 @@ export function UploadButton() {
 			});
 		}
 	}
-
-	let orgId: string | undefined = undefined;
-	if (organization.isLoaded && user.isLoaded) {
-		orgId = organization.organization?.id ?? user.user?.id;
-	}
-
-	const [isFileDialogOpen, setIsFileDialogOpen] = useState(false);
-
-	const createFile = useMutation(api.files.createFile);
 
 	return (
 		<Dialog
